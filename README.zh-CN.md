@@ -1,8 +1,5 @@
 <div align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./FlyMe/Assets.xcassets/AppIcon.appiconset/AppIcon-Dark.png">
-    <img src="./FlyMe/Assets.xcassets/AppIcon.appiconset/AppIcon-Light.png" alt="FlyMe 图标" width="112">
-  </picture>
+  <img src="./icons/logo_dark.png" alt="FlyMe 图标" width="112">
   <h1>FlyMe · 清醒</h1>
   <p>一款私密、克制且认真设计的 iPhone 自律记录工具。</p>
   <p>

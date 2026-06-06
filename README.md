@@ -1,8 +1,5 @@
 <div align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./FlyMe/Assets.xcassets/AppIcon.appiconset/AppIcon-Dark.png">
-    <img src="./FlyMe/Assets.xcassets/AppIcon.appiconset/AppIcon-Light.png" alt="FlyMe icon" width="112">
-  </picture>
+  <img src="./icons/logo_dark.png" alt="FlyMe icon" width="112">
   <h1>FlyMe</h1>
   <p>A private and thoughtfully designed self-awareness tracker for iPhone.</p>
   <p>
