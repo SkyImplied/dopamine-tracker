@@ -1,0 +1,23 @@
+# Xcode build output
+build/
+.derived/
+DerivedData/
+*.ipa
+*.dSYM
+*.dSYM.zip
+
+# User-specific Xcode state
+xcuserdata/
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+
+# Local tooling
+.xcodebuildmcp/
+
+# macOS
+.DS_Store
+
+# Private user data and backups
+data/
+*.backup.json
