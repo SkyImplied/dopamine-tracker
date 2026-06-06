@@ -18,6 +18,52 @@
 
 FlyMe, displayed in-app as **清醒**, helps users recognize behavioral patterns, understand personal rhythms, and record each more intentional choice. It combines a calm Liquid Glass interface with focused tracking, history, and trend views.
 
+## Interface Preview
+
+### Home and Quick Check-ins
+
+<p align="center">
+  <img src="./photos/home.png" alt="FlyMe home screen" width="45%">
+  <img src="./photos/quick-checkin.png" alt="FlyMe quick check-in screen" width="45%">
+</p>
+
+The home screen keeps the current score, recent records, and the primary check-in action close at hand. Quick Check-in presents all six record types in one focused sheet.
+
+### Animated Success Feedback
+
+<p align="center">
+  <img src="./photos/success-urge.png" alt="Urge success animation" width="45%">
+  <img src="./photos/success-masturbation.png" alt="Masturbation success animation" width="45%">
+</p>
+
+Each category receives its own full-screen color treatment, symbol, message, animation, sound, and haptic feedback.
+
+### Trends and Score Insights
+
+<p align="center">
+  <img src="./photos/trends-metrics.png" alt="Metric trends" width="45%">
+  <img src="./photos/trends-score.png" alt="Score trend and weekly insights" width="45%">
+</p>
+
+<p align="center">
+  <img src="./photos/score-details.png" alt="Self-discipline score details" width="45%">
+</p>
+
+Compare selected behavior metrics, follow the separate score trend, and open the score explanation to understand exactly how the current result is calculated.
+
+### History and Settings
+
+<p align="center">
+  <img src="./photos/history-matrix.png" alt="35-day history matrix" width="45%">
+  <img src="./photos/history-day.png" alt="Date-based history browser" width="45%">
+</p>
+
+<p align="center">
+  <img src="./photos/settings.png" alt="FlyMe settings" width="45%">
+</p>
+
+History combines a switchable 35-day metric matrix with calendar-based browsing. Settings keeps privacy controls, feedback preferences, and manual backup together.
+
 ## Quick Check-ins
 
 - Record six types of moments: urges, successful redirections, masturbation, intimacy, explicit content, and nocturnal emissions
