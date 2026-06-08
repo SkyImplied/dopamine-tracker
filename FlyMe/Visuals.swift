@@ -274,6 +274,7 @@ struct CheckInSuccessView: View {
                 .padding(.horizontal, 28)
                 .opacity(revealed ? 1 : 0)
                 .offset(y: revealed ? 0 : 24)
+                .safeAreaPadding(.bottom, 8)
             }
             .padding(.vertical, 32)
         }
@@ -311,6 +312,148 @@ struct CheckInSuccessView: View {
 
     private var displayKindTitle: String {
         isDiscreetSensitive ? "私密记录" : kind.title
+    }
+}
+
+struct ScoreCareView: View {
+    let alert: ScoreAlert
+    let onDone: () -> Void
+
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @AppStorage("haptics") private var haptics = true
+    @State private var revealed = false
+    @State private var breathing = false
+    @State private var drifting = false
+
+    var body: some View {
+        ZStack {
+            Color(hex: "070810").ignoresSafeArea()
+
+            Circle()
+                .fill(alert.band.tint.opacity(0.28))
+                .frame(width: 440, height: 440)
+                .blur(radius: 90)
+                .scaleEffect(breathing ? 1.16 : 0.82)
+                .opacity(breathing ? 0.85 : 0.48)
+
+            Circle()
+                .fill(.purple.opacity(0.2))
+                .frame(width: 320, height: 320)
+                .blur(radius: 100)
+                .offset(x: drifting ? 150 : -130, y: drifting ? -250 : 280)
+
+            SuccessParticleField(color: alert.band.tint, expanded: revealed, rotating: drifting)
+
+            VStack(spacing: 24) {
+                Spacer()
+
+                ZStack {
+                    ForEach(0..<3, id: \.self) { index in
+                        Circle()
+                            .stroke(alert.band.tint.opacity(0.3 - Double(index) * 0.07), lineWidth: 1.5)
+                            .frame(width: CGFloat(152 + index * 54), height: CGFloat(152 + index * 54))
+                            .scaleEffect(breathing ? 1.08 : 0.88)
+                            .animation(
+                                reduceMotion ? .none : .easeInOut(duration: 2.6).repeatForever(autoreverses: true).delay(Double(index) * 0.12),
+                                value: breathing
+                            )
+                    }
+
+                    Circle()
+                        .fill(alert.band.tint.opacity(0.15))
+                        .frame(width: 132, height: 132)
+                        .glassEffect(.regular.tint(alert.band.tint.opacity(0.2)), in: .circle)
+                        .shadow(color: alert.band.tint.opacity(0.5), radius: 42)
+
+                    Image(systemName: alert.band.symbol)
+                        .font(.system(size: 48, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .symbolEffect(.breathe, options: .repeating, value: breathing)
+                }
+                .scaleEffect(revealed ? 1 : 0.35)
+                .opacity(revealed ? 1 : 0)
+
+                VStack(spacing: 10) {
+                    Text(title)
+                        .font(.system(size: 32, weight: .semibold, design: .rounded))
+                        .multilineTextAlignment(.center)
+
+                    Text(message)
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .lineSpacing(4)
+                        .frame(maxWidth: 320)
+                }
+                .opacity(revealed ? 1 : 0)
+                .offset(y: revealed ? 0 : 18)
+
+                HStack(spacing: 14) {
+                    scoreValue("\(alert.currentScore)", label: alert.band.title, color: alert.band.tint)
+                    scoreValue("−\(alert.drop)", label: "本次变化", color: .orange)
+                }
+                .opacity(revealed ? 1 : 0)
+
+                Spacer()
+
+                Button {
+                    onDone()
+                } label: {
+                    Text("照顾好下一刻")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                }
+                .buttonStyle(.glassProminent)
+                .tint(alert.band.tint)
+                .padding(.horizontal, 28)
+                .opacity(revealed ? 1 : 0)
+                .offset(y: revealed ? 0 : 20)
+            }
+            .padding(.vertical, 32)
+        }
+        .preferredColorScheme(.dark)
+        .sensoryFeedback(.warning, trigger: revealed) { _, _ in haptics }
+        .onAppear {
+            withAnimation(.spring(duration: 0.9, bounce: 0.18)) {
+                revealed = true
+            }
+            guard !reduceMotion else { return }
+            withAnimation(.easeInOut(duration: 2.6).repeatForever(autoreverses: true)) {
+                breathing = true
+            }
+            withAnimation(.easeInOut(duration: 6).repeatForever(autoreverses: true)) {
+                drifting = true
+            }
+        }
+    }
+
+    private var title: String {
+        switch alert.reason {
+        case .rapidDrop: "先停一下，别急着追回分数"
+        case .lowScore: "低谷不是结论"
+        }
+    }
+
+    private var message: String {
+        switch alert.reason {
+        case .rapidDrop: "分数下降得有些快，但它只是在提醒你留意当下。真正的改变，来自下一次温柔而清醒的选择。"
+        case .lowScore: "你不需要一次解决所有问题。喝口水，离开触发场景，先完成一个很小的选择。"
+        }
+    }
+
+    private func scoreValue(_ value: String, label: String, color: Color) -> some View {
+        VStack(spacing: 3) {
+            Text(value)
+                .font(.title2.weight(.semibold).monospacedDigit())
+                .foregroundStyle(color)
+            Text(label)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
+        .frame(width: 126)
+        .padding(.vertical, 13)
+        .glassEffect(.regular.tint(color.opacity(0.1)), in: .rect(cornerRadius: 20))
     }
 }
 

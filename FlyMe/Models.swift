@@ -95,6 +95,30 @@ enum CheckInKind: String, Codable, CaseIterable, Identifiable {
         case .nocturnalEmission: "这是自然生理现象，不会影响你的自律指数。"
         }
     }
+
+    func displayTitle(discreetMode: Bool, coded: Bool = false) -> String {
+        guard discreetMode && isSensitive else { return title }
+        guard coded else { return "私密记录" }
+        return switch self {
+        case .masturbation: "私密 A"
+        case .intimacy: "私密 B"
+        case .explicitContent: "私密 C"
+        case .nocturnalEmission: "私密 D"
+        case .urge, .redirected: title
+        }
+    }
+
+    func displaySymbol(discreetMode: Bool) -> String {
+        discreetMode && isSensitive ? "lock.fill" : symbol
+    }
+
+    func displayTint(discreetMode: Bool) -> Color {
+        discreetMode && isSensitive ? .purple : tint
+    }
+
+    func displaySubtitle(discreetMode: Bool) -> String {
+        discreetMode && isSensitive ? "安全记录，不显示具体类型" : subtitle
+    }
 }
 
 struct CheckIn: Codable, Identifiable {
@@ -205,6 +229,18 @@ enum TrendMetric: String, CaseIterable, Identifiable {
         case .nocturnalEmission: .nocturnalEmission
         }
     }
+
+    func displayTitle(discreetMode: Bool, coded: Bool = true) -> String {
+        kind.displayTitle(discreetMode: discreetMode, coded: coded)
+    }
+
+    func displaySymbol(discreetMode: Bool) -> String {
+        kind.displaySymbol(discreetMode: discreetMode)
+    }
+
+    func displayTint(discreetMode: Bool) -> Color {
+        kind.displayTint(discreetMode: discreetMode)
+    }
 }
 
 struct TrendPoint: Identifiable {
@@ -220,22 +256,104 @@ struct ScoreTrendPoint: Identifiable {
     var id: Date { date }
 }
 
+enum ScoreBand: String, CaseIterable, Identifiable {
+    case steady
+    case growing
+    case adjusting
+    case caring
+
+    var id: Self { self }
+
+    static func band(for score: Int) -> Self {
+        switch score {
+        case 85...: .steady
+        case 70..<85: .growing
+        case 55..<70: .adjusting
+        default: .caring
+        }
+    }
+
+    var rangeLabel: String {
+        switch self {
+        case .steady: "85–100"
+        case .growing: "70–84"
+        case .adjusting: "55–69"
+        case .caring: "0–54"
+        }
+    }
+
+    var title: String {
+        switch self {
+        case .steady: "稳定前行"
+        case .growing: "节奏良好"
+        case .adjusting: "正在调整"
+        case .caring: "需要关怀"
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .steady: "sparkles"
+        case .growing: "leaf.fill"
+        case .adjusting: "arrow.trianglehead.2.clockwise"
+        case .caring: "heart.fill"
+        }
+    }
+
+    var tint: Color {
+        switch self {
+        case .steady: .mint
+        case .growing: .cyan
+        case .adjusting: .orange
+        case .caring: .pink
+        }
+    }
+
+    var encouragement: String {
+        switch self {
+        case .steady: "状态很稳，继续把注意力留给真正重要的事。"
+        case .growing: "你正在建立节奏。觉察本身，就是改变的开始。"
+        case .adjusting: "今天不需要完美，只需要做下一次更清醒的选择。"
+        case .caring: "先照顾好自己。分数只是信号，下一刻仍可重新开始。"
+        }
+    }
+}
+
+enum ScoreAlertReason {
+    case rapidDrop
+    case lowScore
+}
+
+struct ScoreAlert: Identifiable {
+    let id = UUID()
+    let previousScore: Int
+    let currentScore: Int
+    let reason: ScoreAlertReason
+
+    var band: ScoreBand { .band(for: currentScore) }
+    var drop: Int { max(0, previousScore - currentScore) }
+}
+
 @Observable
 final class CheckInStore {
     private(set) var entries: [CheckIn] = []
     private let key = "private.checkins.v1"
     private let calendar = Calendar.current
+    let baseScore = 80.0
 
     init() {
         load()
     }
 
-    func add(_ kind: CheckInKind, date: Date = .now, note: String = "") {
+    @discardableResult
+    func add(_ kind: CheckInKind, date: Date = .now, note: String = "") -> ScoreAlert? {
+        let previousScore = score
         withAnimation(.spring(duration: 0.5, bounce: 0.22)) {
             entries.insert(CheckIn(kind: kind, date: date, note: note), at: 0)
             entries.sort { $0.date > $1.date }
         }
         save()
+        return scoreAlert(previousScore: previousScore, currentScore: score, kind: kind, date: date)
     }
 
     func delete(_ entry: CheckIn) {
@@ -272,30 +390,39 @@ final class CheckInStore {
     }
 
     var score: Int {
-        min(100, max(0, Int((82 + recentAdjustment + stableBonus).rounded())))
+        score(at: .now)
     }
 
     var recentAdjustment: Double {
-        recentScoredEntries.reduce(0.0) { $0 + $1.kind.scoreWeight }
+        dynamicAdjustment(at: .now)
     }
 
     var stableBonus: Double {
-        Double(min(stableDays, 7)) * 2.5
+        stableBonus(at: .now)
     }
 
     var recentScoredEntries: [CheckIn] {
-        let start = calendar.date(byAdding: .day, value: -6, to: calendar.startOfDay(for: .now))!
-        return entries.filter { $0.date >= start }
+        let start = calendar.date(byAdding: .day, value: -13, to: calendar.startOfDay(for: .now))!
+        return entries.filter { $0.date >= start && $0.date <= .now }
     }
 
     var stableDays: Int {
-        guard let earliestDate = entries.map(\.date).min() else { return 0 }
+        stableDays(at: .now)
+    }
+
+    var scoreBand: ScoreBand {
+        .band(for: score)
+    }
+
+    private func stableDays(at referenceDate: Date) -> Int {
+        let eligibleEntries = entries.filter { $0.date <= referenceDate }
+        guard let earliestDate = eligibleEntries.map(\.date).min() else { return 0 }
         let earliestDay = calendar.startOfDay(for: earliestDate)
         var days = 0
         for offset in 0..<60 {
-            guard let date = calendar.date(byAdding: .day, value: -offset, to: .now) else { break }
+            guard let date = calendar.date(byAdding: .day, value: -offset, to: referenceDate) else { break }
             guard calendar.startOfDay(for: date) >= earliestDay else { break }
-            let dayEntries = entries.filter { calendar.isDate($0.date, inSameDayAs: date) }
+            let dayEntries = eligibleEntries.filter { calendar.isDate($0.date, inSameDayAs: date) }
             if dayEntries.contains(where: { $0.kind == .explicitContent || $0.kind == .masturbation }) {
                 break
             }
@@ -315,8 +442,7 @@ final class CheckInStore {
         (0..<7).reversed().compactMap { offset in
             guard let date = calendar.date(byAdding: .day, value: -offset, to: .now) else { return nil }
             let matches = entries.filter { calendar.isDate($0.date, inSameDayAs: date) }
-            let dayScore = min(100, max(30, Int(88 + matches.reduce(0.0) { $0 + $1.kind.scoreWeight })))
-            return DaySummary(date: date, count: matches.count, score: dayScore)
+            return DaySummary(date: date, count: matches.count, score: score(at: endOfDay(for: date)))
         }
     }
 
@@ -384,12 +510,34 @@ final class CheckInStore {
     }
 
     var encouragement: String {
-        switch score {
-        case 90...: "状态很稳，继续把注意力留给真正重要的事。"
-        case 75..<90: "你正在建立节奏。觉察本身，就是改变的开始。"
-        case 55..<75: "今天不需要完美，只需要做下一次更清醒的选择。"
-        default: "先照顾好自己。一次记录不会定义你，下一刻仍可重新开始。"
+        scoreBand.encouragement
+    }
+
+    func aiTrendContext(includeDetailedCategories: Bool, discreetMode: Bool = false) -> String {
+        let recent = recentScoredEntries
+        let recentDays = Set(recent.map { calendar.startOfDay(for: $0.date) }).count
+        let previousWeekStart = calendar.date(byAdding: .day, value: -13, to: calendar.startOfDay(for: .now)) ?? .now
+        let thisWeekStart = calendar.date(byAdding: .day, value: -6, to: calendar.startOfDay(for: .now)) ?? .now
+        let previousWeekCount = recent.filter { $0.date >= previousWeekStart && $0.date < thisWeekStart }.count
+        let thisWeekCount = recent.filter { $0.date >= thisWeekStart }.count
+        let direction = thisWeekCount < previousWeekCount ? "减少" : thisWeekCount > previousWeekCount ? "增加" : "持平"
+
+        var lines = [
+            "当前自律指数：\(score)/100（\(scoreBand.title)）",
+            "当前稳定节奏：\(stableDays) 天",
+            "成功转移率：\(redirectRate)%",
+            "近 14 天共记录 \(recent.count) 次，覆盖 \(recentDays) 天",
+            "近 7 天记录次数相较此前 7 天：\(direction)",
+            "说明：分数仅用于观察趋势，不代表医学、心理诊断或人的价值。"
+        ]
+
+        if includeDetailedCategories {
+            let details = CheckInKind.allCases.map { kind in
+                "\(kind.displayTitle(discreetMode: discreetMode, coded: true)) \(recent.filter { $0.kind == kind }.count) 次"
+            }.joined(separator: "；")
+            lines.append("近 14 天详细分类：\(details)")
         }
+        return lines.joined(separator: "\n")
     }
 
     private func save() {
@@ -401,12 +549,76 @@ final class CheckInStore {
         var date = calendar.startOfDay(for: start)
         var scores: [Double] = []
         while date <= end {
-            let matches = entries.filter { calendar.isDate($0.date, inSameDayAs: date) }
-            scores.append(Double(min(100, max(30, Int(88 + matches.reduce(0.0) { $0 + $1.kind.scoreWeight })))))
+            scores.append(Double(score(at: min(endOfDay(for: date), end))))
             guard let next = calendar.date(byAdding: .day, value: 1, to: date) else { break }
             date = next
         }
-        return scores.isEmpty ? 88 : scores.reduce(0, +) / Double(scores.count)
+        return scores.isEmpty ? baseScore : scores.reduce(0, +) / Double(scores.count)
+    }
+
+    private func score(at referenceDate: Date) -> Int {
+        min(100, max(0, Int((baseScore + dynamicAdjustment(at: referenceDate) + stableBonus(at: referenceDate)).rounded())))
+    }
+
+    private func stableBonus(at referenceDate: Date) -> Double {
+        Double(min(stableDays(at: referenceDate), 7)) * 2.2
+    }
+
+    private func dynamicAdjustment(at referenceDate: Date) -> Double {
+        let referenceDay = calendar.startOfDay(for: referenceDate)
+        guard let start = calendar.date(byAdding: .day, value: -13, to: referenceDay) else { return 0 }
+        let relevant = entries
+            .filter { $0.date >= start && $0.date <= referenceDate }
+            .sorted { $0.date < $1.date }
+
+        var repeatedNegativeByDay: [Date: Int] = [:]
+        var recentPressureDates: [Date] = []
+
+        return relevant.reduce(into: 0.0) { total, entry in
+            let entryDay = calendar.startOfDay(for: entry.date)
+            let daysAgo = max(0, calendar.dateComponents([.day], from: entryDay, to: referenceDay).day ?? 0)
+            let recency = max(0.35, 1 - Double(daysAgo) * 0.05)
+            var multiplier = 1.0
+
+            if entry.kind == .explicitContent || entry.kind == .masturbation {
+                let repeats = repeatedNegativeByDay[entryDay, default: 0]
+                multiplier = min(1.75, 1 + Double(repeats) * 0.25)
+                repeatedNegativeByDay[entryDay] = repeats + 1
+                recentPressureDates.append(entry.date)
+            } else if entry.kind == .redirected {
+                let recentPressure = recentPressureDates.filter {
+                    entry.date.timeIntervalSince($0) <= 3 * 24 * 60 * 60
+                }.count
+                multiplier = 1 + min(0.5, Double(recentPressure) * 0.1)
+            }
+
+            total += entry.kind.scoreWeight * recency * multiplier
+        }
+    }
+
+    private func scoreAlert(
+        previousScore: Int,
+        currentScore: Int,
+        kind: CheckInKind,
+        date: Date
+    ) -> ScoreAlert? {
+        guard kind == .explicitContent || kind == .masturbation else { return nil }
+        guard let recentStart = calendar.date(byAdding: .day, value: -13, to: calendar.startOfDay(for: .now)),
+              date >= recentStart
+        else { return nil }
+
+        let drop = previousScore - currentScore
+        if currentScore < 55 {
+            return ScoreAlert(previousScore: previousScore, currentScore: currentScore, reason: .lowScore)
+        }
+        if drop >= 6 {
+            return ScoreAlert(previousScore: previousScore, currentScore: currentScore, reason: .rapidDrop)
+        }
+        return nil
+    }
+
+    private func endOfDay(for date: Date) -> Date {
+        calendar.date(byAdding: DateComponents(day: 1, second: -1), to: calendar.startOfDay(for: date)) ?? date
     }
 
     private func load() {

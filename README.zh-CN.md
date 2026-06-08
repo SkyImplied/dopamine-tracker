@@ -13,36 +13,32 @@
   </p>
 </div>
 
-FlyMe 在应用内显示为 **清醒**，帮助用户觉察行为、理解自己的节奏，并记录每一次更主动的选择。软件以平静克制的 Liquid Glass 界面，整合快速记录、历史回看与趋势分析。
+FlyMe 帮助用户觉察行为、理解自己的节奏，并记录每一次更主动的选择。软件以平静克制的 Liquid Glass 界面，整合快速记录、历史回看、趋势分析与可选的 AI 助手。
 
 ## 界面预览
 
-### 首页与快速记录
+### 首页与 AI 助手
 
 <p align="center">
-  <img src="./photos/home.png" alt="FlyMe 首页" width="45%">
+  <img src="./photos/home-ai-entry.png" alt="包含 AI 助手入口的 FlyMe 首页" width="45%">
+  <img src="./photos/ai-assisted-checkin.png" alt="AI 辅助补记确认界面" width="45%">
+</p>
+
+首页集中展示当前自律指数、最近记录、快速记录与 AI 助手入口。AI 助手可以总结趋势、给出下一步建议，并将自然语言描述转换成始终需要用户确认的待补记记录。
+
+### 快速记录与 AI 配置
+
+<p align="center">
   <img src="./photos/quick-checkin.png" alt="FlyMe 快速记录界面" width="45%">
+  <img src="./photos/ai-settings.png" alt="FlyMe AI 服务设置" width="45%">
 </p>
 
-首页集中展示当前自律指数、最近记录和主要记录入口。快速记录界面将六类事件收纳在一个专注、清晰的面板中。
-
-### 全屏成功反馈
-
-<p align="center">
-  <img src="./photos/success-urge.png" alt="欲望来袭成功动效" width="45%">
-  <img src="./photos/success-masturbation.png" alt="自慰记录成功动效" width="45%">
-</p>
-
-不同记录类型拥有独立的全屏色彩、图标、文案和动效，并配合对应音效与触感反馈。
+快速记录界面将六类事件收纳在一个专注、清晰的面板中。AI 服务由用户自行配置，API Key 保存在本机 Keychain，是否发送详细分类统计也由用户决定。
 
 ### 趋势与指数洞察
 
 <p align="center">
-  <img src="./photos/trends-metrics.png" alt="六项指标趋势" width="45%">
-  <img src="./photos/trends-score.png" alt="自律得分趋势与本周洞察" width="45%">
-</p>
-
-<p align="center">
+  <img src="./photos/trends.png" alt="指标趋势与范围选择" width="45%">
   <img src="./photos/score-details.png" alt="自律指数计算详情" width="45%">
 </p>
 
@@ -51,22 +47,26 @@ FlyMe 在应用内显示为 **清醒**，帮助用户觉察行为、理解自己
 ### 历史与设置
 
 <p align="center">
-  <img src="./photos/history-matrix.png" alt="最近 35 天指标矩阵" width="45%">
-  <img src="./photos/history-day.png" alt="按日期查看历史记录" width="45%">
-</p>
-
-<p align="center">
+  <img src="./photos/history.png" alt="最近 35 天指标矩阵与日期回看" width="45%">
   <img src="./photos/settings.png" alt="FlyMe 设置界面" width="45%">
 </p>
 
-历史页面结合可切换的 35 天指标矩阵与日历回看；设置页面集中管理隐私、反馈偏好和手动备份。
+历史页面结合可切换的 35 天指标矩阵、日历回看与记录管理；设置页面集中管理隐私、反馈偏好、手动备份和低调显示。
+
+## AI 助手
+
+- 请求趋势总结与低压力的下一步建议
+- 使用自然语言描述过去发生的事件，并在写入前确认 AI 建议记录
+- 创建独立对话、回看历史对话并删除不需要的对话
+- 配置硅基流动、DeepSeek 或其他 OpenAI 兼容接口
+- API Key 仅保存在本机 Keychain，并可选择是否发送详细分类次数
 
 ## 快速记录
 
 - 支持记录欲望来袭、成功转移、自慰、房事、看黄和遗精六类事件
 - 可以从首页记录此刻，也可以在历史页面补记过去发生的记录
 - 每次记录完成后展示独立的全屏成功动效，并播放轻柔音效与触感反馈
-- 支持添加备注，保留当时值得回看的信息
+- AI 辅助补记始终需要确认后才会写入本机
 
 ## 自律指数
 
@@ -94,6 +94,7 @@ FlyMe 在应用内显示为 **清醒**，帮助用户觉察行为、理解自己
 
 - 默认将记录保存在设备本地
 - 开启低调显示后，在软件各处隐藏敏感记录名称
+- 低调显示覆盖记录、趋势、历史、指数详情、AI 上下文与成功反馈
 - 可以分别开启或关闭成功音效与触感反馈
 - 支持手动备份与恢复记录，可自行选择 iCloud Drive 等保存位置
 

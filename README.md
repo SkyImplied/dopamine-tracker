@@ -13,36 +13,32 @@
   </p>
 </div>
 
-FlyMe, displayed in-app as **清醒**, helps users recognize behavioral patterns, understand personal rhythms, and record each more intentional choice. It combines a calm Liquid Glass interface with focused tracking, history, and trend views.
+FlyMe helps users recognize behavioral patterns, understand personal rhythms, and record each more intentional choice. It combines a calm Liquid Glass interface with focused tracking, history, trend views, and an optional AI assistant.
 
 ## Interface Preview
 
-### Home and Quick Check-ins
+### Home and AI Assistant
 
 <p align="center">
-  <img src="./photos/home.png" alt="FlyMe home screen" width="45%">
+  <img src="./photos/home-ai-entry.png" alt="FlyMe home screen with AI assistant entry" width="45%">
+  <img src="./photos/ai-assisted-checkin.png" alt="AI-assisted check-in confirmation" width="45%">
+</p>
+
+The home screen keeps the current score, recent records, quick check-in, and AI assistant close at hand. The AI assistant can summarize trends, suggest next actions, and turn natural-language descriptions into records that are always confirmed before saving.
+
+### Quick Check-ins and AI Configuration
+
+<p align="center">
   <img src="./photos/quick-checkin.png" alt="FlyMe quick check-in screen" width="45%">
+  <img src="./photos/ai-settings.png" alt="FlyMe AI service settings" width="45%">
 </p>
 
-The home screen keeps the current score, recent records, and the primary check-in action close at hand. Quick Check-in presents all six record types in one focused sheet.
-
-### Animated Success Feedback
-
-<p align="center">
-  <img src="./photos/success-urge.png" alt="Urge success animation" width="45%">
-  <img src="./photos/success-masturbation.png" alt="Masturbation success animation" width="45%">
-</p>
-
-Each category receives its own full-screen color treatment, symbol, message, animation, sound, and haptic feedback.
+Quick Check-in presents all six record types in one focused sheet. AI connections are user-configured, API keys stay in the device Keychain, and detailed category statistics are optional.
 
 ### Trends and Score Insights
 
 <p align="center">
-  <img src="./photos/trends-metrics.png" alt="Metric trends" width="45%">
-  <img src="./photos/trends-score.png" alt="Score trend and weekly insights" width="45%">
-</p>
-
-<p align="center">
+  <img src="./photos/trends.png" alt="Metric trends and range controls" width="45%">
   <img src="./photos/score-details.png" alt="Self-discipline score details" width="45%">
 </p>
 
@@ -51,22 +47,26 @@ Compare selected behavior metrics, follow the separate score trend, and open the
 ### History and Settings
 
 <p align="center">
-  <img src="./photos/history-matrix.png" alt="35-day history matrix" width="45%">
-  <img src="./photos/history-day.png" alt="Date-based history browser" width="45%">
-</p>
-
-<p align="center">
+  <img src="./photos/history.png" alt="35-day history matrix and date browser" width="45%">
   <img src="./photos/settings.png" alt="FlyMe settings" width="45%">
 </p>
 
-History combines a switchable 35-day metric matrix with calendar-based browsing. Settings keeps privacy controls, feedback preferences, and manual backup together.
+History combines a switchable 35-day metric matrix with calendar-based browsing and record management. Settings keeps privacy controls, feedback preferences, manual backup, and Discreet Mode together.
+
+## AI Assistant
+
+- Ask for trend summaries and low-pressure next-step suggestions
+- Describe past events naturally and review AI-proposed records before saving
+- Keep separate conversations, revisit conversation history, and delete old conversations
+- Configure SiliconFlow, DeepSeek, or another OpenAI-compatible endpoint
+- Store API keys locally in Keychain and choose whether detailed category counts are shared
 
 ## Quick Check-ins
 
 - Record six types of moments: urges, successful redirections, masturbation, intimacy, explicit content, and nocturnal emissions
 - Add a record immediately from the home screen or backdate it from History
 - Receive a distinct full-screen success animation, gentle sound effect, and haptic response after every check-in
-- Add optional notes to preserve useful context
+- Confirm AI-assisted records before they are written locally
 
 ## Self-Discipline Score
 
@@ -94,6 +94,7 @@ History combines a switchable 35-day metric matrix with calendar-based browsing.
 
 - Keep records on the device by default
 - Hide sensitive category names throughout the app with Discreet Mode
+- Apply Discreet Mode across records, trends, history, score details, AI context, and success feedback
 - Enable or disable success sounds and haptic feedback independently
 - Manually back up and restore records through a user-selected location, including iCloud Drive
 

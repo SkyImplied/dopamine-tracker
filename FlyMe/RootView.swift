@@ -10,16 +10,22 @@ enum CheckInMode: Identifiable {
 
 struct RootView: View {
     @State private var selectedTab = 0
+    @State private var showingAI = false
     @State private var checkInMode: CheckInMode?
     @State private var successKind: CheckInKind?
     @State private var pendingSuccessKind: CheckInKind?
+    @State private var scoreAlert: ScoreAlert?
+    @State private var pendingScoreAlert: ScoreAlert?
 
     var body: some View {
         ZStack {
             AuroraBackground()
 
             TabView(selection: $selectedTab) {
-                DashboardView(checkInMode: $checkInMode)
+                DashboardView(
+                    checkInMode: $checkInMode,
+                    onOpenAI: openAI
+                )
                     .tag(0)
                     .tabItem { Label("今天", systemImage: "circle.grid.2x2.fill") }
 
@@ -36,16 +42,13 @@ struct RootView: View {
                     .tabItem { Label("设置", systemImage: "slider.horizontal.3") }
             }
             .tint(.white)
-
-            if let successKind {
-                CheckInSuccessView(kind: successKind) {
-                    withAnimation(.easeOut(duration: 0.25)) {
-                        self.successKind = nil
-                    }
-                }
-                .transition(.opacity.combined(with: .scale(scale: 1.02)))
-                .zIndex(10)
-            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .overlay {
+            successOverlay
+        }
+        .overlay {
+            scoreCareOverlay
         }
         .sheet(item: $checkInMode, onDismiss: {
             guard let pendingSuccessKind else { return }
@@ -54,12 +57,74 @@ struct RootView: View {
                 successKind = pendingSuccessKind
             }
         }) { mode in
-            CheckInSheet(mode: mode) { kind in
+            CheckInSheet(mode: mode) { kind, alert in
                 pendingSuccessKind = kind
+                pendingScoreAlert = alert
                 checkInMode = nil
             }
                 .presentationDetents([.large])
                 .presentationBackground(.ultraThinMaterial)
+        }
+        .fullScreenCover(isPresented: $showingAI) {
+            AIView(
+                onReturnHome: closeAI
+            )
+        }
+    }
+
+    @ViewBuilder
+    private var successOverlay: some View {
+        if let successKind {
+            CheckInSuccessView(kind: successKind) {
+                finishSuccess()
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .ignoresSafeArea()
+            .transition(.opacity)
+            .zIndex(10)
+        }
+    }
+
+    @ViewBuilder
+    private var scoreCareOverlay: some View {
+        if let scoreAlert, successKind == nil {
+            ScoreCareView(alert: scoreAlert) {
+                withAnimation(.easeOut(duration: 0.22)) {
+                    self.scoreAlert = nil
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .ignoresSafeArea()
+            .transition(.opacity)
+            .zIndex(11)
+        }
+    }
+
+    private func openAI() {
+        selectedTab = 0
+        showingAI = true
+    }
+
+    private func closeAI() {
+        selectedTab = 0
+        showingAI = false
+    }
+
+    private func finishSuccess() {
+        withAnimation(.easeOut(duration: 0.25)) {
+            successKind = nil
+        }
+        guard let pendingScoreAlert else { return }
+        self.pendingScoreAlert = nil
+        withAnimation(.easeIn(duration: 0.3).delay(0.15)) {
+            scoreAlert = pendingScoreAlert
+        }
+    }
+
+    private func presentCheckInSuccess(kind: CheckInKind, alert: ScoreAlert?) {
+        pendingScoreAlert = alert
+        withAnimation(.easeIn(duration: 0.25)) {
+            successKind = kind
         }
     }
 }
@@ -67,6 +132,7 @@ struct RootView: View {
 struct DashboardView: View {
     @Environment(CheckInStore.self) private var store
     @Binding var checkInMode: CheckInMode?
+    let onOpenAI: () -> Void
     @State private var appeared = false
     @State private var scrollOffset: CGFloat = 0
     @State private var showingScoreDetails = false
@@ -80,6 +146,7 @@ struct DashboardView: View {
                         subtitle: "今天也把主动权留给自己"
                     )
                     hero
+                    aiEntry
                     quickAction
                     recent
                 }
@@ -133,6 +200,9 @@ struct DashboardView: View {
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .fixedSize(horizontal: false, vertical: true)
+                        Label(store.scoreBand.title, systemImage: store.scoreBand.symbol)
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(store.scoreBand.tint)
                     }
                 }
 
@@ -175,12 +245,49 @@ struct DashboardView: View {
             .frame(height: 58)
             .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 22))
             .padding(.horizontal, 16)
+            .contentShape(.rect)
         }
         .buttonStyle(.plain)
         .opacity(compactHeaderProgress)
         .offset(y: -12 * (1 - compactHeaderProgress))
         .scaleEffect(0.97 + 0.03 * compactHeaderProgress)
         .allowsHitTesting(compactHeaderProgress > 0.9)
+        .accessibilityLabel("查看自律指数详情")
+        .accessibilityHint("打开具体评分和计算方式")
+    }
+
+    private var aiEntry: some View {
+        Button(action: onOpenAI) {
+            HStack(spacing: 8) {
+                ZStack {
+                    Circle()
+                        .fill(.cyan.opacity(0.16))
+                        .frame(width: 48, height: 48)
+                    Image(systemName: "sparkles")
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(.cyan)
+                }
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("AI 助手")
+                        .font(.headline)
+                    Text("总结趋势、给建议，也能帮你补记")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                Image(systemName: "chevron.right")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.white.opacity(0.58))
+            }
+            .padding(16)
+            .frame(maxWidth: .infinity)
+            .glassEffect(.regular.tint(.cyan.opacity(0.08)).interactive(), in: .rect(cornerRadius: 24))
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("打开 AI 助手")
     }
 
     private var quickAction: some View {
@@ -257,7 +364,7 @@ struct EntryRow: View {
                 .frame(width: 36, height: 36)
                 .background(displayTint.opacity(0.14), in: .circle)
             VStack(alignment: .leading, spacing: 2) {
-                Text(discreetMode && entry.kind.isSensitive ? "私密记录" : entry.kind.title)
+                Text(entry.kind.displayTitle(discreetMode: discreetMode))
                     .font(.subheadline.weight(.medium))
                 Text(entry.date.formatted(date: .abbreviated, time: .shortened))
                     .font(.caption2).foregroundStyle(.secondary)
@@ -273,11 +380,11 @@ struct EntryRow: View {
     }
 
     private var displaySymbol: String {
-        discreetMode && entry.kind.isSensitive ? "lock.fill" : entry.kind.symbol
+        entry.kind.displaySymbol(discreetMode: discreetMode)
     }
 
     private var displayTint: Color {
-        discreetMode && entry.kind.isSensitive ? .purple : entry.kind.tint
+        entry.kind.displayTint(discreetMode: discreetMode)
     }
 
 }
@@ -285,6 +392,7 @@ struct EntryRow: View {
 struct ScoreExplanationView: View {
     @Environment(CheckInStore.self) private var store
     @Environment(\.dismiss) private var dismiss
+    @AppStorage("discreetMode") private var discreetMode = true
 
     var body: some View {
         NavigationStack {
@@ -302,7 +410,7 @@ struct ScoreExplanationView: View {
                                         .foregroundStyle(.cyan)
                                 }
                             }
-                            Text("用于观察近 7 天的自律节奏，不是对你的评价，也不代表医学结论。")
+                            Text("用于观察近 14 天的自律节奏，不是对你的评价，也不代表医学结论。")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
                                 .fixedSize(horizontal: false, vertical: true)
@@ -312,14 +420,40 @@ struct ScoreExplanationView: View {
                     GlassCard {
                         VStack(alignment: .leading, spacing: 14) {
                             Text("当前分数如何得出").font(.title3.weight(.semibold))
-                            formulaRow("基础分", "82", .cyan)
-                            formulaRow("近 7 天记录影响", signed(store.recentAdjustment), store.recentAdjustment >= 0 ? .mint : .orange)
+                            formulaRow("基础分", formatted(store.baseScore), .cyan)
+                            formulaRow("近 14 天动态影响", signed(store.recentAdjustment), store.recentAdjustment >= 0 ? .mint : .orange)
                             formulaRow("稳定节奏奖励", "+\(formatted(store.stableBonus))", .purple)
                             Divider().opacity(0.18)
                             formulaRow("最终结果", "\(store.score)", .white)
-                            Text("结果会限制在 0 至 100 分之间。稳定节奏奖励每天 +2.5，最多计算 7 天。")
+                            Text("越近的记录影响越大；同日重复负向记录会逐步增加影响；低谷期成功转移会获得额外恢复。结果限制在 0 至 100 分。")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
+                        }
+                    }
+
+                    GlassCard {
+                        VStack(alignment: .leading, spacing: 13) {
+                            Text("分数区间").font(.title3.weight(.semibold))
+                            ForEach(ScoreBand.allCases) { band in
+                                HStack(spacing: 10) {
+                                    Image(systemName: band.symbol)
+                                        .foregroundStyle(band.tint)
+                                        .frame(width: 28)
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(band.title)
+                                            .font(.subheadline.weight(.semibold))
+                                        Text(band.rangeLabel)
+                                            .font(.caption2)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                    Spacer()
+                                    if band == store.scoreBand {
+                                        Text("当前")
+                                            .font(.caption.weight(.semibold))
+                                            .foregroundStyle(band.tint)
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -361,10 +495,10 @@ struct ScoreExplanationView: View {
 
     private func weightRow(_ kind: CheckInKind) -> some View {
         HStack(spacing: 10) {
-            Image(systemName: kind.symbol)
-                .foregroundStyle(kind.tint)
+            Image(systemName: kind.displaySymbol(discreetMode: discreetMode))
+                .foregroundStyle(kind.displayTint(discreetMode: discreetMode))
                 .frame(width: 28)
-            Text(kind.title)
+            Text(kind.displayTitle(discreetMode: discreetMode, coded: true))
             Spacer()
             Text(kind.scoreWeight == 0 ? "不影响" : signed(kind.scoreWeight))
                 .font(.subheadline.weight(.semibold).monospacedDigit())
@@ -386,9 +520,10 @@ struct CheckInSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var saved = false
     @State private var selectedDate = Date.now
+    @AppStorage("discreetMode") private var discreetMode = true
     @AppStorage("haptics") private var haptics = true
     let mode: CheckInMode
-    let onRecorded: (CheckInKind) -> Void
+    let onRecorded: (CheckInKind, ScoreAlert?) -> Void
 
     var body: some View {
         NavigationStack {
@@ -434,19 +569,19 @@ struct CheckInSheet: View {
 
     private func kindButton(_ kind: CheckInKind) -> some View {
         Button {
-            store.add(kind, date: mode == .now ? .now : selectedDate)
+            let alert = store.add(kind, date: mode == .now ? .now : selectedDate)
             saved.toggle()
-            onRecorded(kind)
+            onRecorded(kind, alert)
         } label: {
             VStack(alignment: .leading, spacing: 16) {
-                Image(systemName: kind.symbol)
+                Image(systemName: kind.displaySymbol(discreetMode: discreetMode))
                     .font(.title2.weight(.semibold))
-                    .foregroundStyle(kind.tint)
+                    .foregroundStyle(kind.displayTint(discreetMode: discreetMode))
                     .frame(width: 44, height: 44)
-                    .background(kind.tint.opacity(0.14), in: .circle)
+                    .background(kind.displayTint(discreetMode: discreetMode).opacity(0.14), in: .circle)
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(kind.title).font(.headline)
-                    Text(kind.subtitle).font(.caption).foregroundStyle(.secondary)
+                    Text(kind.displayTitle(discreetMode: discreetMode, coded: true)).font(.headline)
+                    Text(kind.displaySubtitle(discreetMode: discreetMode)).font(.caption).foregroundStyle(.secondary)
                         .lineLimit(2)
                 }
             }
@@ -460,8 +595,10 @@ struct CheckInSheet: View {
 
 struct InsightsView: View {
     @Environment(CheckInStore.self) private var store
+    @AppStorage("discreetMode") private var discreetMode = true
     @State private var range: TrendRange = .week
     @State private var selectedMetrics: Set<TrendMetric> = [.masturbation, .intimacy]
+    @State private var scrollOffset: CGFloat = 0
 
     var body: some View {
         NavigationStack {
@@ -500,7 +637,7 @@ struct InsightsView: View {
                                 }
                             }
 
-                            TrendChartView(points: trendPoints, range: range)
+                            TrendChartView(points: trendPoints, range: range, discreetMode: discreetMode)
                                 .id(range)
                                 .transition(.opacity.combined(with: .scale(scale: 0.98)))
                                 .animation(.spring(duration: 0.65, bounce: 0.14), value: range)
@@ -542,7 +679,7 @@ struct InsightsView: View {
                         }
                     }
 
-                    Text("分数用于观察趋势，不代表医学或心理诊断。亲密行为与遗精不会降低分数。")
+                    Text(discreetMode ? "分数用于观察趋势，不代表医学或心理诊断。私密中性记录不会降低分数。" : "分数用于观察趋势，不代表医学或心理诊断。亲密行为与遗精不会降低分数。")
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                         .padding(.horizontal, 20)
@@ -551,8 +688,57 @@ struct InsightsView: View {
                 .padding(.bottom, 110)
             }
             .scrollIndicators(.hidden)
+            .onScrollGeometryChange(for: CGFloat.self) { geometry in
+                geometry.contentOffset.y + geometry.contentInsets.top
+            } action: { _, newValue in
+                scrollOffset = max(0, newValue)
+            }
+            .overlay(alignment: .top) {
+                compactRangeHeader
+            }
             .toolbar(.hidden, for: .navigationBar)
         }
+    }
+
+    private var compactHeaderProgress: CGFloat {
+        min(max((scrollOffset - 48) / 70, 0), 1)
+    }
+
+    private var compactRangeHeader: some View {
+        Menu {
+            Picker("查看范围", selection: $range) {
+                ForEach(TrendRange.allCases) { item in
+                    Text(item.rawValue).tag(item)
+                }
+            }
+        } label: {
+            HStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("趋势")
+                        .font(.headline)
+                    Text("点击切换查看范围")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Text(range.rawValue)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.cyan)
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(.tertiary)
+            }
+            .padding(.horizontal, 16)
+            .frame(height: 58)
+            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 22))
+            .padding(.horizontal, 16)
+        }
+        .buttonStyle(.plain)
+        .opacity(compactHeaderProgress)
+        .offset(y: -12 * (1 - compactHeaderProgress))
+        .scaleEffect(0.97 + 0.03 * compactHeaderProgress)
+        .allowsHitTesting(compactHeaderProgress > 0.9)
+        .accessibilityLabel("查看范围，当前为\(range.rawValue)")
     }
 
     private var trendPoints: [TrendPoint] {
@@ -576,11 +762,11 @@ struct InsightsView: View {
             }
         } label: {
             HStack(spacing: 8) {
-                Image(systemName: selected ? "checkmark.circle.fill" : metric.symbol)
-                    .foregroundStyle(metric.tint)
+                Image(systemName: selected ? "checkmark.circle.fill" : metric.displaySymbol(discreetMode: discreetMode))
+                    .foregroundStyle(metric.displayTint(discreetMode: discreetMode))
                     .contentTransition(.symbolEffect(.replace))
                 VStack(alignment: .leading, spacing: 1) {
-                    Text(metric.title)
+                    Text(metric.displayTitle(discreetMode: discreetMode))
                         .font(.caption.weight(.semibold))
                     Text("累计 \(store.trendTotal(for: metric, range: range)) 次")
                         .font(.system(size: 9))
@@ -590,14 +776,14 @@ struct InsightsView: View {
             }
             .padding(.horizontal, 10)
             .frame(height: 48)
-            .background(metric.tint.opacity(selected ? 0.14 : 0.035), in: .rect(cornerRadius: 15))
+            .background(metric.displayTint(discreetMode: discreetMode).opacity(selected ? 0.14 : 0.035), in: .rect(cornerRadius: 15))
             .overlay {
                 RoundedRectangle(cornerRadius: 15)
-                    .stroke(metric.tint.opacity(selected ? 0.45 : 0.08), lineWidth: 1)
+                    .stroke(metric.displayTint(discreetMode: discreetMode).opacity(selected ? 0.45 : 0.08), lineWidth: 1)
             }
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("\(selected ? "取消显示" : "显示")\(metric.title)趋势")
+        .accessibilityLabel("\(selected ? "取消显示" : "显示")\(metric.displayTitle(discreetMode: discreetMode))趋势")
     }
 
     private func insightRow(_ title: String, _ value: String, _ symbol: String, _ color: Color) -> some View {
@@ -617,15 +803,16 @@ struct InsightsView: View {
 private struct TrendChartView: View {
     let points: [TrendPoint]
     let range: TrendRange
+    let discreetMode: Bool
 
     var body: some View {
         Chart(points) { point in
             LineMark(
                 x: .value("日期", point.date),
                 y: .value("次数", point.value),
-                series: .value("指标", point.metric.title)
+                series: .value("指标", point.metric.displayTitle(discreetMode: discreetMode))
             )
-            .foregroundStyle(point.metric.tint)
+            .foregroundStyle(point.metric.displayTint(discreetMode: discreetMode))
             .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round))
             .interpolationMethod(.catmullRom)
 
@@ -633,7 +820,7 @@ private struct TrendChartView: View {
                 x: .value("日期", point.date),
                 y: .value("次数", point.value)
             )
-            .foregroundStyle(point.metric.tint)
+            .foregroundStyle(point.metric.displayTint(discreetMode: discreetMode))
             .symbolSize(range == .year ? 12 : 24)
         }
         .chartYAxis {
@@ -871,9 +1058,9 @@ struct HistoryView: View {
     private func heatColor(_ count: Int) -> Color {
         switch count {
         case 0: .white.opacity(0.055)
-        case 1: selectedHeatmapKind.tint.opacity(0.32)
-        case 2: selectedHeatmapKind.tint.opacity(0.58)
-        default: selectedHeatmapKind.tint.opacity(0.9)
+        case 1: selectedHeatmapKind.displayTint(discreetMode: discreetMode).opacity(0.32)
+        case 2: selectedHeatmapKind.displayTint(discreetMode: discreetMode).opacity(0.58)
+        default: selectedHeatmapKind.displayTint(discreetMode: discreetMode).opacity(0.9)
         }
     }
 
@@ -882,22 +1069,15 @@ struct HistoryView: View {
     }
 
     private var heatmapMetricTitle: String {
-        discreetMode && selectedHeatmapKind.isSensitive ? "私密记录" : selectedHeatmapKind.title
+        selectedHeatmapKind.displayTitle(discreetMode: discreetMode)
     }
 
     private func heatmapChipTitle(for kind: CheckInKind) -> String {
-        guard discreetMode && kind.isSensitive else { return kind.title }
-        return switch kind {
-        case .masturbation: "私密 A"
-        case .intimacy: "私密 B"
-        case .explicitContent: "私密 C"
-        case .nocturnalEmission: "私密 D"
-        case .urge, .redirected: kind.title
-        }
+        kind.displayTitle(discreetMode: discreetMode, coded: true)
     }
 
     private func heatmapChipSymbol(for kind: CheckInKind) -> String {
-        discreetMode && kind.isSensitive ? "lock.fill" : kind.symbol
+        kind.displaySymbol(discreetMode: discreetMode)
     }
 
     private var heatmapDateRange: String {
@@ -995,7 +1175,7 @@ struct HistoryView: View {
         if discreetMode {
             let visible = store.kindCounts
                 .filter { !$0.kind.isSensitive }
-                .map { HistoryDistributionItem(title: $0.kind.title, count: $0.count, color: $0.kind.tint) }
+                .map { HistoryDistributionItem(title: $0.kind.displayTitle(discreetMode: discreetMode, coded: true), count: $0.count, color: $0.kind.displayTint(discreetMode: discreetMode)) }
             let privateCount = store.kindCounts
                 .filter { $0.kind.isSensitive }
                 .reduce(0) { $0 + $1.count }
@@ -1004,7 +1184,7 @@ struct HistoryView: View {
                 : visible
         }
         return store.kindCounts.map {
-            HistoryDistributionItem(title: $0.kind.title, count: $0.count, color: $0.kind.tint)
+            HistoryDistributionItem(title: $0.kind.displayTitle(discreetMode: discreetMode, coded: true), count: $0.count, color: $0.kind.displayTint(discreetMode: discreetMode))
         }
     }
 }
@@ -1129,15 +1309,15 @@ private struct RecordManagerView: View {
     }
 
     private func displayTitle(for entry: CheckIn) -> String {
-        discreetMode && entry.kind.isSensitive ? "私密记录" : entry.kind.title
+        entry.kind.displayTitle(discreetMode: discreetMode)
     }
 
     private func displaySymbol(for entry: CheckIn) -> String {
-        discreetMode && entry.kind.isSensitive ? "lock.fill" : entry.kind.symbol
+        entry.kind.displaySymbol(discreetMode: discreetMode)
     }
 
     private func displayTint(for entry: CheckIn) -> Color {
-        discreetMode && entry.kind.isSensitive ? .purple : entry.kind.tint
+        entry.kind.displayTint(discreetMode: discreetMode)
     }
 }
 
@@ -1211,7 +1391,7 @@ struct SettingsView: View {
                             Toggle(isOn: $discreetMode) {
                                 VStack(alignment: .leading, spacing: 3) {
                                     Label("低调显示", systemImage: "eye.slash")
-                                    Text("隐藏首页、历史、统计和成功反馈中的敏感名称")
+                            Text("隐藏首页、记录、历史、统计、AI 上下文和成功反馈中的敏感名称")
                                         .font(.caption2)
                                         .foregroundStyle(.secondary)
                                 }
@@ -1241,7 +1421,7 @@ struct SettingsView: View {
                     GlassCard {
                         VStack(alignment: .leading, spacing: 10) {
                             Text("关于评分").font(.headline)
-                            Text("综合指数关注近 7 天规律、稳定天数和成功转移注意力的次数。房事与遗精被视为中性记录，不会降低评分。")
+                            Text(discreetMode ? "综合指数关注近 14 天规律，并根据时间远近、同日重复情况和成功转移动态调整。私密中性记录不会降低评分。" : "综合指数关注近 14 天规律，并根据时间远近、同日重复情况和成功转移动态调整。房事与遗精被视为中性记录，不会降低评分。")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                         }
