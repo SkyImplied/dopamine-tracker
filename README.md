@@ -53,6 +53,29 @@ Compare selected behavior metrics, follow the separate score trend, and open the
 
 History combines a switchable 35-day metric matrix with calendar-based browsing and record management. Settings keeps privacy controls, feedback preferences, manual backup, and Discreet Mode together.
 
+### Apple Watch Companion
+
+<p align="center">
+  <img src="./photos/现已支持Apple Watch端.png" alt="FlyMe now on Apple Watch" width="90%">
+</p>
+
+<p align="center">
+  <img src="./photos/动感起飞功能可以设定目标.png" alt="Dynamic Takeoff goal setting" width="45%">
+  <img src="./photos/动感起飞功能排行榜功能.png" alt="Dynamic Takeoff leaderboard" width="45%">
+</p>
+
+<p align="center">
+  <img src="./photos/快速记录_Watch.png" alt="Quick record on Apple Watch" width="45%">
+  <img src="./photos/同步iPhone端最近记录.png" alt="Sync recent records from iPhone" width="45%">
+</p>
+
+<p align="center">
+  <img src="./photos/完整记录_watch.png" alt="Full record view on Apple Watch" width="45%">
+  <img src="./photos/watch端独占功能_动感起飞_记录自慰的频率次数和时间.png" alt="Watch-exclusive Dynamic Takeoff tracking" width="45%">
+</p>
+
+FlyMe now runs natively on Apple Watch, with phone-watch connectivity for seamless syncing. Quick record, full history browsing, and the watch-exclusive Dynamic Takeoff feature are all accessible from your wrist.
+
 ## AI Assistant
 
 - Ask for trend summaries and low-pressure next-step suggestions
@@ -97,6 +120,22 @@ History combines a switchable 35-day metric matrix with calendar-based browsing 
 - Apply Discreet Mode across records, trends, history, score details, AI context, and success feedback
 - Enable or disable success sounds and haptic feedback independently
 - Manually back up and restore records through a user-selected location, including iCloud Drive
+
+## Apple Watch
+
+- Record all six check-in types directly from your watch
+- Browse full history and recent records synced from iPhone
+- Quick-record with one tap from the watch home screen
+- Automatically syncs recent iPhone records via WatchConnectivity
+- Native watchOS SwiftUI interface tuned for the small screen
+
+## Dynamic Takeoff（动感起飞）
+
+- Set a personal frequency goal for masturbation tracking
+- Track progress against your goal with animated visual feedback
+- Watch-exclusive: log frequency, duration, and time directly on Apple Watch
+- View a leaderboard-style ranking of your tracking discipline
+- All data stays local and syncs securely between devices
 
 ## Design
 
