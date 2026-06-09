@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 import UniformTypeIdentifiers
 
-enum CheckInKind: String, Codable, CaseIterable, Identifiable {
+enum CheckInKind: String, Codable, CaseIterable, Identifiable, Sendable {
     case urge
     case redirected
     case masturbation
@@ -121,14 +121,14 @@ enum CheckInKind: String, Codable, CaseIterable, Identifiable {
     }
 }
 
-struct CheckIn: Codable, Identifiable {
+struct CheckIn: Codable, Identifiable, Sendable {
     let id: UUID
     let kind: CheckInKind
     let date: Date
     let note: String
 
-    init(kind: CheckInKind, date: Date = .now, note: String = "") {
-        id = UUID()
+    init(id: UUID = UUID(), kind: CheckInKind, date: Date = .now, note: String = "") {
+        self.id = id
         self.kind = kind
         self.date = date
         self.note = note
@@ -354,6 +354,15 @@ final class CheckInStore {
         }
         save()
         return scoreAlert(previousScore: previousScore, currentScore: score, kind: kind, date: date)
+    }
+
+    @discardableResult
+    func addFromCompanion(_ entry: CheckIn) -> Bool {
+        guard !entries.contains(where: { $0.id == entry.id }) else { return false }
+        entries.append(entry)
+        entries.sort { $0.date > $1.date }
+        save()
+        return true
     }
 
     func delete(_ entry: CheckIn) {

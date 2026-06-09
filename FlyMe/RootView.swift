@@ -368,6 +368,12 @@ struct EntryRow: View {
                     .font(.subheadline.weight(.medium))
                 Text(entry.date.formatted(date: .abbreviated, time: .shortened))
                     .font(.caption2).foregroundStyle(.secondary)
+                if !entry.note.isEmpty {
+                    Text(entry.note)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
             }
             Spacer()
         }
@@ -598,7 +604,6 @@ struct InsightsView: View {
     @AppStorage("discreetMode") private var discreetMode = true
     @State private var range: TrendRange = .week
     @State private var selectedMetrics: Set<TrendMetric> = [.masturbation, .intimacy]
-    @State private var scrollOffset: CGFloat = 0
 
     var body: some View {
         NavigationStack {
@@ -688,57 +693,8 @@ struct InsightsView: View {
                 .padding(.bottom, 110)
             }
             .scrollIndicators(.hidden)
-            .onScrollGeometryChange(for: CGFloat.self) { geometry in
-                geometry.contentOffset.y + geometry.contentInsets.top
-            } action: { _, newValue in
-                scrollOffset = max(0, newValue)
-            }
-            .overlay(alignment: .top) {
-                compactRangeHeader
-            }
             .toolbar(.hidden, for: .navigationBar)
         }
-    }
-
-    private var compactHeaderProgress: CGFloat {
-        min(max((scrollOffset - 48) / 70, 0), 1)
-    }
-
-    private var compactRangeHeader: some View {
-        Menu {
-            Picker("查看范围", selection: $range) {
-                ForEach(TrendRange.allCases) { item in
-                    Text(item.rawValue).tag(item)
-                }
-            }
-        } label: {
-            HStack(spacing: 12) {
-                VStack(alignment: .leading, spacing: 1) {
-                    Text("趋势")
-                        .font(.headline)
-                    Text("点击切换查看范围")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
-                Text(range.rawValue)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.cyan)
-                Image(systemName: "chevron.up.chevron.down")
-                    .font(.caption.weight(.bold))
-                    .foregroundStyle(.tertiary)
-            }
-            .padding(.horizontal, 16)
-            .frame(height: 58)
-            .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 22))
-            .padding(.horizontal, 16)
-        }
-        .buttonStyle(.plain)
-        .opacity(compactHeaderProgress)
-        .offset(y: -12 * (1 - compactHeaderProgress))
-        .scaleEffect(0.97 + 0.03 * compactHeaderProgress)
-        .allowsHitTesting(compactHeaderProgress > 0.9)
-        .accessibilityLabel("查看范围，当前为\(range.rawValue)")
     }
 
     private var trendPoints: [TrendPoint] {

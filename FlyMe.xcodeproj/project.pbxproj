@@ -1,126 +1,269 @@
 // !$*UTF8*$!
 {
 	archiveVersion = 1;
-	classes = {};
-	objectVersion = 56;
+	classes = {
+	};
+	objectVersion = 71;
 	objects = {
-		B00000000000000000000001 = {isa = PBXBuildFile; fileRef = C00000000000000000000001; };
-		B00000000000000000000002 = {isa = PBXBuildFile; fileRef = C00000000000000000000002; };
-		B00000000000000000000003 = {isa = PBXBuildFile; fileRef = C00000000000000000000003; };
-		B00000000000000000000004 = {isa = PBXBuildFile; fileRef = C00000000000000000000004; };
-		B00000000000000000000005 = {isa = PBXBuildFile; fileRef = C00000000000000000000005; };
-		B00000000000000000000006 = {isa = PBXBuildFile; fileRef = C00000000000000000000006; };
-		B00000000000000000000007 = {isa = PBXBuildFile; fileRef = C00000000000000000000007; };
-		C00000000000000000000001 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlyMeApp.swift; sourceTree = "<group>"; };
-		C00000000000000000000002 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
-		C00000000000000000000003 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Visuals.swift; sourceTree = "<group>"; };
-		C00000000000000000000004 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
-		C00000000000000000000005 = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		C00000000000000000000006 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIModels.swift; sourceTree = "<group>"; };
-		C00000000000000000000007 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIView.swift; sourceTree = "<group>"; };
-		A00000000000000000000001 = {
+
+/* Begin PBXBuildFile section */
+		B00000000000000000000001 /* FlyMeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000000000000000000001 /* FlyMeApp.swift */; };
+		B00000000000000000000002 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000000000000000000002 /* Models.swift */; };
+		B00000000000000000000003 /* Visuals.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000000000000000000003 /* Visuals.swift */; };
+		B00000000000000000000004 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000000000000000000004 /* RootView.swift */; };
+		B00000000000000000000005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C00000000000000000000005 /* Assets.xcassets */; };
+		B00000000000000000000006 /* AIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000000000000000000006 /* AIModels.swift */; };
+		B00000000000000000000007 /* AIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000000000000000000007 /* AIView.swift */; };
+		B00000000000000000000008 /* PhoneWatchConnectivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C00000000000000000000008 /* PhoneWatchConnectivity.swift */; };
+		D00000000000000000000001 /* FlyMeWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00000000000000000000011 /* FlyMeWatchApp.swift */; };
+		D00000000000000000000002 /* WatchCheckInStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00000000000000000000012 /* WatchCheckInStore.swift */; };
+		D00000000000000000000003 /* WatchHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00000000000000000000013 /* WatchHomeView.swift */; };
+		D00000000000000000000004 /* FlyMe Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = D00000000000000000000010 /* FlyMe Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		D00000000000000000000005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D00000000000000000000015 /* Assets.xcassets */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		D00000000000000000000030 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A00000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D00000000000000000000020;
+			remoteInfo = "FlyMe Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D00000000000000000000040 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				D00000000000000000000004 /* FlyMe Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A00000000000000000000008 /* FlyMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FlyMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C00000000000000000000001 /* FlyMeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlyMeApp.swift; sourceTree = "<group>"; };
+		C00000000000000000000002 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		C00000000000000000000003 /* Visuals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Visuals.swift; sourceTree = "<group>"; };
+		C00000000000000000000004 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		C00000000000000000000005 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C00000000000000000000006 /* AIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIModels.swift; sourceTree = "<group>"; };
+		C00000000000000000000007 /* AIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIView.swift; sourceTree = "<group>"; };
+		C00000000000000000000008 /* PhoneWatchConnectivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneWatchConnectivity.swift; sourceTree = "<group>"; };
+		D00000000000000000000010 /* FlyMe Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FlyMe Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D00000000000000000000011 /* FlyMeWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlyMeWatchApp.swift; sourceTree = "<group>"; };
+		D00000000000000000000012 /* WatchCheckInStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchCheckInStore.swift; sourceTree = "<group>"; };
+		D00000000000000000000013 /* WatchHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHomeView.swift; sourceTree = "<group>"; };
+		D00000000000000000000014 /* FlyMeWatchApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FlyMeWatchApp.entitlements; sourceTree = "<group>"; };
+		D00000000000000000000015 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A00000000000000000000006 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D00000000000000000000042 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A00000000000000000000003 = {
+			isa = PBXGroup;
+			children = (
+				A00000000000000000000009 /* FlyMe */,
+				D00000000000000000000009 /* FlyMe Watch App */,
+				A00000000000000000000004 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A00000000000000000000004 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A00000000000000000000008 /* FlyMe.app */,
+				D00000000000000000000010 /* FlyMe Watch App.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A00000000000000000000009 /* FlyMe */ = {
+			isa = PBXGroup;
+			children = (
+				C00000000000000000000001 /* FlyMeApp.swift */,
+				C00000000000000000000002 /* Models.swift */,
+				C00000000000000000000003 /* Visuals.swift */,
+				C00000000000000000000004 /* RootView.swift */,
+				C00000000000000000000005 /* Assets.xcassets */,
+				C00000000000000000000006 /* AIModels.swift */,
+				C00000000000000000000007 /* AIView.swift */,
+				C00000000000000000000008 /* PhoneWatchConnectivity.swift */,
+			);
+			path = FlyMe;
+			sourceTree = "<group>";
+		};
+		D00000000000000000000009 /* FlyMe Watch App */ = {
+			isa = PBXGroup;
+			children = (
+				D00000000000000000000015 /* Assets.xcassets */,
+				D00000000000000000000011 /* FlyMeWatchApp.swift */,
+				D00000000000000000000012 /* WatchCheckInStore.swift */,
+				D00000000000000000000013 /* WatchHomeView.swift */,
+				D00000000000000000000014 /* FlyMeWatchApp.entitlements */,
+			);
+			path = "FlyMe Watch App";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A00000000000000000000002 /* FlyMe */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A00000000000000000000011 /* Build configuration list for PBXNativeTarget "FlyMe" */;
+			buildPhases = (
+				A00000000000000000000005 /* Sources */,
+				A00000000000000000000006 /* Frameworks */,
+				A00000000000000000000007 /* Resources */,
+				D00000000000000000000040 /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D00000000000000000000031 /* PBXTargetDependency */,
+			);
+			name = FlyMe;
+			packageProductDependencies = (
+			);
+			productName = FlyMe;
+			productReference = A00000000000000000000008 /* FlyMe.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D00000000000000000000020 /* FlyMe Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D00000000000000000000060 /* Build configuration list for PBXNativeTarget "FlyMe Watch App" */;
+			buildPhases = (
+				D00000000000000000000041 /* Sources */,
+				D00000000000000000000042 /* Frameworks */,
+				D00000000000000000000043 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "FlyMe Watch App";
+			packageProductDependencies = (
+			);
+			productName = "FlyMe Watch App";
+			productReference = D00000000000000000000010 /* FlyMe Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A00000000000000000000001 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2650;
 				LastUpgradeCheck = 2650;
 				TargetAttributes = {
-					A00000000000000000000002 = { CreatedOnToolsVersion = 26.5; };
+					A00000000000000000000002 = {
+						CreatedOnToolsVersion = 26.5;
+					};
+					D00000000000000000000020 = {
+						CreatedOnToolsVersion = 26.5;
+					};
 				};
 			};
-			buildConfigurationList = A00000000000000000000010;
+			buildConfigurationList = A00000000000000000000010 /* Build configuration list for PBXProject "FlyMe" */;
 			compatibilityVersion = "Xcode 16.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
-			knownRegions = (en, Base, "zh-Hans");
+			knownRegions = (
+				en,
+				Base,
+				"zh-Hans",
+			);
 			mainGroup = A00000000000000000000003;
-			productRefGroup = A00000000000000000000004;
+			productRefGroup = A00000000000000000000004 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
-			targets = (A00000000000000000000002);
-		};
-		A00000000000000000000002 = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = A00000000000000000000011;
-			buildPhases = (A00000000000000000000005, A00000000000000000000006, A00000000000000000000007);
-			buildRules = ();
-			dependencies = ();
-			name = FlyMe;
-			packageProductDependencies = ();
-			productName = FlyMe;
-			productReference = A00000000000000000000008;
-			productType = "com.apple.product-type.application";
-		};
-		A00000000000000000000003 = {
-			isa = PBXGroup;
-			children = (A00000000000000000000009, A00000000000000000000004);
-			sourceTree = "<group>";
-		};
-		A00000000000000000000004 = {
-			isa = PBXGroup;
-			children = (A00000000000000000000008);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		A00000000000000000000009 = {
-			isa = PBXGroup;
-			children = (
-				C00000000000000000000001,
-				C00000000000000000000002,
-				C00000000000000000000003,
-				C00000000000000000000004,
-				C00000000000000000000005,
-				C00000000000000000000006,
-				C00000000000000000000007,
+			targets = (
+				A00000000000000000000002 /* FlyMe */,
+				D00000000000000000000020 /* FlyMe Watch App */,
 			);
-			path = FlyMe;
-			sourceTree = "<group>";
 		};
-		A00000000000000000000008 = {
-			isa = PBXFileReference;
-			explicitFileType = wrapper.application;
-			includeInIndex = 0;
-			path = FlyMe.app;
-			sourceTree = BUILT_PRODUCTS_DIR;
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A00000000000000000000007 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B00000000000000000000005 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A00000000000000000000005 = {
+		D00000000000000000000043 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D00000000000000000000005 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A00000000000000000000005 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B00000000000000000000001,
-				B00000000000000000000002,
-				B00000000000000000000003,
-				B00000000000000000000004,
-				B00000000000000000000006,
-				B00000000000000000000007,
+				B00000000000000000000001 /* FlyMeApp.swift in Sources */,
+				B00000000000000000000002 /* Models.swift in Sources */,
+				B00000000000000000000003 /* Visuals.swift in Sources */,
+				B00000000000000000000004 /* RootView.swift in Sources */,
+				B00000000000000000000006 /* AIModels.swift in Sources */,
+				B00000000000000000000007 /* AIView.swift in Sources */,
+				B00000000000000000000008 /* PhoneWatchConnectivity.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A00000000000000000000006 = {
-			isa = PBXFrameworksBuildPhase;
+		D00000000000000000000041 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
-			files = ();
+			files = (
+				D00000000000000000000001 /* FlyMeWatchApp.swift in Sources */,
+				D00000000000000000000002 /* WatchCheckInStore.swift in Sources */,
+				D00000000000000000000003 /* WatchHomeView.swift in Sources */,
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A00000000000000000000007 = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (B00000000000000000000005);
-			runOnlyForDeploymentPostprocessing = 0;
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		D00000000000000000000031 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D00000000000000000000020 /* FlyMe Watch App */;
+			targetProxy = D00000000000000000000030 /* PBXContainerItemProxy */;
 		};
-		A00000000000000000000010 = {
-			isa = XCConfigurationList;
-			buildConfigurations = (A00000000000000000000012, A00000000000000000000013);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A00000000000000000000011 = {
-			isa = XCConfigurationList;
-			buildConfigurations = (A00000000000000000000014, A00000000000000000000015);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A00000000000000000000012 = {
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		A00000000000000000000012 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
@@ -129,7 +272,7 @@
 			};
 			name = Debug;
 		};
-		A00000000000000000000013 = {
+		A00000000000000000000013 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
@@ -139,7 +282,7 @@
 			};
 			name = Release;
 		};
-		A00000000000000000000014 = {
+		A00000000000000000000014 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -154,7 +297,7 @@
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.skyimplied.FlyMe;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -167,7 +310,7 @@
 			};
 			name = Debug;
 		};
-		A00000000000000000000015 = {
+		A00000000000000000000015 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -182,7 +325,7 @@
 				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.skyimplied.FlyMe;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -195,6 +338,104 @@
 			};
 			name = Release;
 		};
+		D00000000000000000000061 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = "FlyMe Watch App/FlyMeWatchApp.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = XDDKA9697J;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "清醒";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "清醒需要读取心率，用于动感起飞页面显示运动中的心率。";
+				INFOPLIST_KEY_NSMotionUsageDescription = "清醒需要读取手表运动数据，用于估算动感起飞页面的次数和频率。";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.skyimplied.FlyMe;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 2.1;
+				"OTHER_CODE_SIGN_FLAGS[sdk=watchos*]" = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.skyimplied.FlyMe.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Debug;
+		};
+		D00000000000000000000062 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = "FlyMe Watch App/FlyMeWatchApp.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = XDDKA9697J;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "清醒";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "清醒需要读取心率，用于动感起飞页面显示运动中的心率。";
+				INFOPLIST_KEY_NSMotionUsageDescription = "清醒需要读取手表运动数据，用于估算动感起飞页面的次数和频率。";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = com.skyimplied.FlyMe;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 2.1;
+				"OTHER_CODE_SIGN_FLAGS[sdk=watchos*]" = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.skyimplied.FlyMe.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "watchos watchsimulator";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A00000000000000000000010 /* Build configuration list for PBXProject "FlyMe" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A00000000000000000000012 /* Debug */,
+				A00000000000000000000013 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A00000000000000000000011 /* Build configuration list for PBXNativeTarget "FlyMe" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A00000000000000000000014 /* Debug */,
+				A00000000000000000000015 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D00000000000000000000060 /* Build configuration list for PBXNativeTarget "FlyMe Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D00000000000000000000061 /* Debug */,
+				D00000000000000000000062 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
 	};
-	rootObject = A00000000000000000000001;
+	rootObject = A00000000000000000000001 /* Project object */;
 }

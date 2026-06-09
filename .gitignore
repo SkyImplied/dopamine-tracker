@@ -21,3 +21,6 @@ xcuserdata/
 # Private user data and backups
 data/
 *.backup.json
+
+# Build distributions
+dist/
