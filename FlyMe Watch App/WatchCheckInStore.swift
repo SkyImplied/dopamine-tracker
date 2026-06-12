@@ -70,7 +70,7 @@ struct WatchRecentEntry: Codable, Identifiable, Sendable {
 
 @Observable
 @MainActor
-final class WatchCheckInStore: NSObject, @preconcurrency WCSessionDelegate {
+final class WatchCheckInStore: NSObject, WCSessionDelegate {
     private(set) var score = 80
     private(set) var baseScore = 80.0
     private(set) var recentAdjustment = 0.0

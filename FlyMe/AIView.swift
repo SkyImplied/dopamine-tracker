@@ -329,12 +329,48 @@ struct AIView: View {
     }
 
     private func bubbleText(_ message: AIMessage, color: Color) -> some View {
-        Text(message.content)
+        Text(renderedContent(for: message))
             .font(.body)
-            .lineSpacing(3)
+            .lineSpacing(4)
             .textSelection(.enabled)
             .padding(14)
             .background(color, in: .rect(cornerRadius: 20))
+    }
+
+    private func renderedContent(for message: AIMessage) -> AttributedString {
+        guard message.role == .assistant else {
+            return AttributedString(message.content)
+        }
+
+        let options = AttributedString.MarkdownParsingOptions(
+            interpretedSyntax: .inlineOnlyPreservingWhitespace,
+            failurePolicy: .returnPartiallyParsedIfPossible
+        )
+        let formattedContent = formattedAssistantContent(message.content)
+        return (try? AttributedString(markdown: formattedContent, options: options))
+            ?? AttributedString(formattedContent)
+    }
+
+    private func formattedAssistantContent(_ content: String) -> String {
+        var formatted = content.replacingOccurrences(of: "\r\n", with: "\n")
+
+        // Models occasionally return list items in one paragraph. Give each item
+        // its own visually distinct paragraph while leaving normal prose intact.
+        let inlineListBoundary = #"(?<!\n)[ \t]+(?=(?:[1-9]|1[0-9])[.、][ \t]*)"#
+        formatted = formatted.replacingOccurrences(
+            of: inlineListBoundary,
+            with: "\n\n",
+            options: .regularExpression
+        )
+
+        let inlineBulletBoundary = #"(?<!\n)[ \t]+(?=[\-•][ \t]+)"#
+        formatted = formatted.replacingOccurrences(
+            of: inlineBulletBoundary,
+            with: "\n\n",
+            options: .regularExpression
+        )
+
+        return formatted
     }
 
     private var composer: some View {
